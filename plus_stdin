@@ -1,11 +1,15 @@
 #!/usr/bin/python3
 import sys
 
+
+def tonum(s):   #def 関数の名前(引数)で関数を定義
+    try:
+        return int(s)
+    except ValueError:
+        return float(s)
+
 x = 0                     #もともと0.0だったのを0に変更
 for line in sys.stdin:
-    try:
-        x += int(line)    #intは文字列を整数に（失敗すると例外発生）
-    except ValueError:    #第3回で見たエラーの名前
-        x += float(line)
+    x += tonum(line.rstrip())
 
 print(x)
