@@ -13,18 +13,50 @@ def to_num(s):
     return float(s)
 
 
-line = sys.stdin.readline().strip().replace(" ", "")
+line = sys.stdin.read().strip()
+if line == "" or "\n" in line:
+    print("error: invalid format", file=sys.stderr)
+    sys.exit(1)
+
+line = line.replace(" ", "")
 eqs = line.split(",")
+if len(eqs) != 2:
+    print("error: invalid format", file=sys.stderr)
+    sys.exit(1)
 
 m = []
 for eq in eqs:
-    left, right = eq.split("=")
-    a_str, rest = left.split("x")
-    b_str = rest.split("y")[0]
+    if eq.count("=") != 1 or eq.count("x") != 1 or eq.count("y") != 1:
+        print("error: invalid format", file=sys.stderr)
+        sys.exit(1)
 
-    a = to_num(a_str)
-    b = to_num(b_str)
-    c = float(right)
+    left, right = eq.split("=")
+    if "x" not in left or "y" not in left:
+        print("error: invalid format", file=sys.stderr)
+        sys.exit(1)
+
+    a_str, rest = left.split("x")
+    if "y" not in rest:
+        print("error: invalid format", file=sys.stderr)
+        sys.exit(1)
+
+    b_str, tail = rest.split("y")
+    if tail != "":
+        print("error: invalid format", file=sys.stderr)
+        sys.exit(1)
+
+    if b_str == "" or (b_str[0] != "+" and b_str[0] != "-"):
+        print("error: invalid format", file=sys.stderr)
+        sys.exit(1)
+
+    try:
+        a = to_num(a_str)
+        b = to_num(b_str)
+        c = float(right)
+    except ValueError:
+        print("error: invalid format", file=sys.stderr)
+        sys.exit(1)
+
     m.append([a, b, c])
 
 x = 0.0
