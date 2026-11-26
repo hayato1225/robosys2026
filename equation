@@ -1,0 +1,48 @@
+#!/usr/bin/python3
+# SPDX-FileCopyrightText: 2026 TSUKADA HAYATO
+# SPDX-License-Identifier: BSD-3-Clause
+
+import sys
+
+
+def to_num(s):
+    if s == "" or s == "+":
+        return 1.0
+    if s == "-":
+        return -1.0
+    return float(s)
+
+
+line = sys.stdin.readline().strip().replace(" ", "")
+eqs = line.split(",")
+
+m = []
+for eq in eqs:
+    left, right = eq.split("=")
+    a_str, rest = left.split("x")
+    b_str = rest.split("y")[0]
+
+    a = to_num(a_str)
+    b = to_num(b_str)
+    c = float(right)
+    m.append([a, b, c])
+
+x = 0.0
+y = 0.0
+max_iter = 1000
+eps = 1e-6
+
+for k in range(max_iter):
+    new_x = (m[0][2] - m[0][1] * y) / m[0][0]
+    new_y = (m[1][2] - m[1][0] * new_x) / m[1][1]
+
+    if abs(new_x - x) < eps and abs(new_y - y) < eps:
+        x = new_x
+        y = new_y
+        break
+
+    x = new_x
+    y = new_y
+
+print(f"{x:.6f}")
+print(f"{y:.6f}")
