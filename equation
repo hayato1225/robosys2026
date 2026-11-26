@@ -2,6 +2,7 @@
 # SPDX-FileCopyrightText: 2026 TSUKADA HAYATO
 # SPDX-License-Identifier: BSD-3-Clause
 
+import math
 import sys
 
 
@@ -57,24 +58,42 @@ for eq in eqs:
         print("error: invalid format", file=sys.stderr)
         sys.exit(1)
 
+    if not math.isfinite(a) or not math.isfinite(b) or not math.isfinite(c):
+        print("error: invalid number", file=sys.stderr)
+        sys.exit(1)
+
     m.append([a, b, c])
+
+if m[0][0] == 0.0 or m[1][1] == 0.0:
+    print("error: division by zero", file=sys.stderr)
+    sys.exit(1)
 
 x = 0.0
 y = 0.0
 max_iter = 1000
 eps = 1e-6
+ok = False
 
 for k in range(max_iter):
     new_x = (m[0][2] - m[0][1] * y) / m[0][0]
     new_y = (m[1][2] - m[1][0] * new_x) / m[1][1]
 
+    if not math.isfinite(new_x) or not math.isfinite(new_y):
+        print("error: diverged", file=sys.stderr)
+        sys.exit(1)
+
     if abs(new_x - x) < eps and abs(new_y - y) < eps:
         x = new_x
         y = new_y
+        ok = True
         break
 
     x = new_x
     y = new_y
+
+if not ok:
+    print("error: not converged", file=sys.stderr)
+    sys.exit(1)
 
 print(f"{x:.6f}")
 print(f"{y:.6f}")
