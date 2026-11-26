@@ -13,7 +13,7 @@
 以下のコマンドでリポジトリをクローンし、ディレクトリへ移動します。
 
 ```bash
-$ git clone [https://github.com/hayato1225/robosys2026.git](https://github.com/hayato1225/robosys2026.git)
+$ git clone [https://github.com/hayato1225/robosys2026.git]
 $ cd robosys2026
 ```
 
