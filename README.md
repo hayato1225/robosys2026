@@ -2,7 +2,7 @@
 
 ![test](https://github.com/hayato1225/robosys2026/actions/workflows/test.yml/badge.svg)
 
-このリポジトリはロボットシステム学の授業で利用するリポジトリです。
+このリポジトリはロボットシステム学の課題で利用するリポジトリです。
 
 ## equationコマンド
 
