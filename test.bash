@@ -1,28 +1,45 @@
-#!/bin/bash
+#!/bin/bash -xv
 # SPDX-FileCopyrightText: 2026 TSUKADA HAYATO
 # SPDX-License-Identifier: BSD-3-Clause
 
-ng () {                               # 関数ngの定義（P18と同じ）
-        echo ${1}行目のテスト失敗
-        res=1                          # 失敗したことを記録
+ng () {
+    echo "${1}行目が違うよ"
+    res=1
 }
 
-res=0                                  # 0: 失敗なし（ngが呼ばれると1になる）
+res=0
 
-### NORMAL INPUT ###
-out=$(seq 5 | ./plus)
-[ "$?" = 0 ]      || ng "$LINENO"
-[ "${out}" = 15 ] || ng "$LINENO"
+### 正常系 ###
+out=$(echo "4x+1y=7,1x+3y=10" | ./equation)
+[ "$?" = 0 ] || ng "$LINENO"
+expected=$(printf "1.000000\n3.000000")
+[ "${out}" = "${expected}" ] || ng "$LINENO"
 
-### STRANGE INPUT ###
-out=$(echo あ | ./plus)           #計算できない値を入力してみる
-[ "$?" = 1 ]      || ng "$LINENO" #終了ステータスが1なのを確認
-[ "${out}" = "" ] || ng "$LINENO" #上の行と入れ替えるとダメ（なぜ？）
+out=$(echo "x - 2y = -3, 3x + y = 5" | ./equation)
+[ "$?" = 0 ] || ng "$LINENO"
+expected=$(printf "1.000000\n2.000000")
+[ "${out}" = "${expected}" ] || ng "$LINENO"
 
-out=$(echo | ./plus)              #なにも入力しない
-[ "$?" = 1 ]      || ng "$LINENO" #これも異常終了する
+### 異常系 ###
+out=$(echo "" | ./equation 2>/dev/null)
+[ "$?" = 1 ] || ng "$LINENO"
 [ "${out}" = "" ] || ng "$LINENO"
 
+out=$(echo "4x+1y=7" | ./equation 2>/dev/null)
+[ "$?" = 1 ] || ng "$LINENO"
+[ "${out}" = "" ] || ng "$LINENO"
 
-[ "${res}" = 0 ] && echo OK            # 通ったのが（人間に）分かるように表示
-exit $res                              # 終了ステータスを返して終了（機械向け）
+out=$(echo "ax+by=c,dx+ey=f" | ./equation 2>/dev/null)
+[ "$?" = 1 ] || ng "$LINENO"
+[ "${out}" = "" ] || ng "$LINENO"
+
+out=$(echo "0x+2y=4,3x+1y=5" | ./equation 2>/dev/null)
+[ "$?" = 1 ] || ng "$LINENO"
+[ "${out}" = "" ] || ng "$LINENO"
+
+out=$(echo "1x+4y=7,4x+1y=10" | ./equation 2>/dev/null)
+[ "$?" = 1 ] || ng "$LINENO"
+[ "${out}" = "" ] || ng "$LINENO"
+
+[ "${res}" = 0 ] && echo "OK"
+exit $res
