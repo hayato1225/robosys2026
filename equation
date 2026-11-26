@@ -6,7 +6,7 @@ import math
 import sys
 
 
-def to_num(s):
+def num(s):
     if s == "" or s == "+":
         return 1.0
     if s == "-":
@@ -16,83 +16,83 @@ def to_num(s):
 
 line = sys.stdin.read().strip()
 if line == "" or "\n" in line:
-    print("error: invalid format", file=sys.stderr)
+    print("エラー: 形式が異なります", file=sys.stderr)
     sys.exit(1)
 
 line = line.replace(" ", "")
-eqs = line.split(",")
-if len(eqs) != 2:
-    print("error: invalid format", file=sys.stderr)
+q = line.split(",")
+if len(q) != 2:
+    print("エラー: 形式が異なります", file=sys.stderr)
     sys.exit(1)
 
 m = []
-for eq in eqs:
+for eq in q:
     if eq.count("=") != 1 or eq.count("x") != 1 or eq.count("y") != 1:
-        print("error: invalid format", file=sys.stderr)
+        print("エラー: 形式が異なります", file=sys.stderr)
         sys.exit(1)
 
     left, right = eq.split("=")
     if "x" not in left or "y" not in left:
-        print("error: invalid format", file=sys.stderr)
+        print("エラー: 形式が異なります", file=sys.stderr)
         sys.exit(1)
 
-    a_str, rest = left.split("x")
+    a, rest = left.split("x")
     if "y" not in rest:
-        print("error: invalid format", file=sys.stderr)
+        print("エラー: 形式が異なります", file=sys.stderr)
         sys.exit(1)
 
-    b_str, tail = rest.split("y")
+    b, tail = rest.split("y")
     if tail != "":
-        print("error: invalid format", file=sys.stderr)
+        print("エラー: 形式が異なります", file=sys.stderr)
         sys.exit(1)
 
-    if b_str == "" or (b_str[0] != "+" and b_str[0] != "-"):
-        print("error: invalid format", file=sys.stderr)
+    if b == "" or (b[0] != "+" and b[0] != "-"):
+        print("エラー: 形式が異なります", file=sys.stderr)
         sys.exit(1)
 
     try:
-        a = to_num(a_str)
-        b = to_num(b_str)
+        a = num(a)
+        b = num(b)
         c = float(right)
     except ValueError:
-        print("error: invalid format", file=sys.stderr)
+        print("エラー: 形式が異なります", file=sys.stderr)
         sys.exit(1)
 
     if not math.isfinite(a) or not math.isfinite(b) or not math.isfinite(c):
-        print("error: invalid number", file=sys.stderr)
+        print("エラー: 数値が不適切です", file=sys.stderr)
         sys.exit(1)
 
     m.append([a, b, c])
 
 if m[0][0] == 0.0 or m[1][1] == 0.0:
-    print("error: division by zero", file=sys.stderr)
+    print("エラー: ０", file=sys.stderr)
     sys.exit(1)
 
 x = 0.0
 y = 0.0
-max_iter = 1000
-eps = 1e-6
-ok = False
+max = 1000
+n = 1e-6
+OK = False
 
-for k in range(max_iter):
-    new_x = (m[0][2] - m[0][1] * y) / m[0][0]
-    new_y = (m[1][2] - m[1][0] * new_x) / m[1][1]
+for k in range(max):
+    newx = (m[0][2] - m[0][1] * y) / m[0][0]
+    newy = (m[1][2] - m[1][0] * newx) / m[1][1]
 
-    if not math.isfinite(new_x) or not math.isfinite(new_y):
-        print("error: diverged", file=sys.stderr)
+    if not math.isfinite(newx) or not math.isfinite(newy):
+        print("エラー: diverged", file=sys.stderr)
         sys.exit(1)
 
-    if abs(new_x - x) < eps and abs(new_y - y) < eps:
-        x = new_x
-        y = new_y
-        ok = True
+    if abs(newx - x) < n and abs(newy - y) < n:
+        x = newx
+        y = newy
+        OK = True
         break
 
-    x = new_x
-    y = new_y
+    x = newx
+    y = newy
 
-if not ok:
-    print("error: not converged", file=sys.stderr)
+if not OK:
+    print("エラー: 値が収束しません", file=sys.stderr)
     sys.exit(1)
 
 print(f"{x:.6f}")
