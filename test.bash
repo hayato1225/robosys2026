@@ -15,7 +15,7 @@ out=$(echo "4x+1y=7,1x+3y=10" | ./equation)
 expected=$(printf "1.000000\n3.000000")
 [ "${out}" = "${expected}" ] || ng "$LINENO"
 
-out=$(echo "x - 2y = -3, 3x + y = 5" | ./equation)
+out=$(echo "3x + y = 5, x - 2y = -3" | ./equation)
 [ "$?" = 0 ] || ng "$LINENO"
 expected=$(printf "1.000000\n2.000000")
 [ "${out}" = "${expected}" ] || ng "$LINENO"
